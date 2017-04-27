@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">PublicHealth</string>
+    <string name="title_activity_maps_all">Map</string>
+    <string name="title_activity_maps2">Map</string>
+    <string name="title_activity_maps_animal_all">Map</string>
+    <string name="title_activity_maps_animal_filter">Map</string>
+</resources>
