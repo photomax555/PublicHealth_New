@@ -290,7 +290,8 @@ public class MapsActivityAll extends FragmentActivity implements OnMapReadyCallb
                 String tel = location.get(i).get("TEL");
                 String url = location.get(i).get("URL");
 
-                MarkerOptions marker = new MarkerOptions().position(new LatLng(Latitude, Longitude)).title(name).snippet(tel);
+
+                MarkerOptions marker = new MarkerOptions().position(new LatLng(Latitude, Longitude)).title(name).snippet(addr+"\b\b"+tel+"\b\b"+url);
 
                     marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.hospital));
 
