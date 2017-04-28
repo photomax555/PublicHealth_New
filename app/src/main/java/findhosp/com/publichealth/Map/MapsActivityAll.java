@@ -2,9 +2,11 @@ package findhosp.com.publichealth.Map;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -13,6 +15,10 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -34,6 +40,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -47,7 +54,7 @@ import java.util.HashMap;
 
 import findhosp.com.publichealth.R;
 
-public class MapsActivityAll extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener  {
+public class MapsActivityAll extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener,GoogleMap.InfoWindowAdapter {
     private ProgressDialog progressDialog;
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
@@ -209,6 +216,34 @@ public class MapsActivityAll extends FragmentActivity implements OnMapReadyCallb
         }
     }
 
+    @Override
+    public View getInfoWindow(Marker marker) {
+        return null;
+    }
+
+    @Override
+    public View getInfoContents(Marker marker) {
+        Context mContext = MapsActivityAll.this;
+
+        LinearLayout info = new LinearLayout(mContext);
+        info.setOrientation(LinearLayout.VERTICAL);
+
+        TextView title = new TextView(mContext);
+        title.setTextColor(Color.BLACK);
+        title.setGravity(Gravity.CENTER);
+        title.setTypeface(null, Typeface.BOLD);
+        title.setText(marker.getTitle());
+
+        TextView snippet = new TextView(mContext);
+        snippet.setTextColor(Color.GRAY);
+        snippet.setText(marker.getSnippet());
+
+        info.addView(title);
+        info.addView(snippet);
+
+        return info;
+    }
+
     // GET DATA API
     class GetDataApi extends AsyncTask<Void, Void, Void> {
         private String result;
@@ -252,7 +287,10 @@ public class MapsActivityAll extends FragmentActivity implements OnMapReadyCallb
                 Longitude = Double.parseDouble(location.get(i).get("LON"));
                 String name = location.get(i).get("HHOS_NAME");
                 String addr = location.get(i).get("ADDR");
-                MarkerOptions marker = new MarkerOptions().position(new LatLng(Latitude, Longitude)).title(name);
+                String tel = location.get(i).get("TEL");
+                String url = location.get(i).get("URL");
+
+                MarkerOptions marker = new MarkerOptions().position(new LatLng(Latitude, Longitude)).title(name).snippet(tel);
 
                     marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.hospital));
 
@@ -305,8 +343,11 @@ public class MapsActivityAll extends FragmentActivity implements OnMapReadyCallb
 
                 map = new HashMap<>();
                 map.put("HHOS_NAME", c.getString("HHOS_NAME"));
+                map.put("TEL",c.getString("TEL"));
+                map.put("ADDR",c.getString("ADDR"));
                 map.put("LAT", c.getString("LAT"));
                 map.put("LON", c.getString("LON"));
+                map.put("URL",c.getString("URL"));
                 location.add(map);
             }
 

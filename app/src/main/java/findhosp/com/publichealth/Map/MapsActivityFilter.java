@@ -2,6 +2,7 @@ package findhosp.com.publichealth.Map;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -70,15 +71,16 @@ public class MapsActivityFilter extends FragmentActivity implements OnMapReadyCa
     Circle circle;
 
 
-    String getUrl="http://find-hosp.com/web_service/get_hhos.php?";
+    String getUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps2);
 
-        /*Intent intent = getIntent();
-        getUrl = intent.getStringExtra("GET_URL");*/
+        Intent intent = getIntent();
+        getUrl = intent.getStringExtra("GET_URL");
+
         new GetDataApi().execute();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();

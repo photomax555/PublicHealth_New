@@ -77,13 +77,15 @@ public class PeopleFilter extends AppCompatActivity {
             public void onClick(View v) {
                 if (anInt==0) {
                     Intent intent1 = new Intent(PeopleFilter.this, MapsActivityFilter.class);
+                    intent1.putExtra("GET_URL", getUrl);
                     startActivity(intent1);
-                } else {
+                } else{
                     String type = typeSpinner.getSelectedItem().toString();
                     String specialized = specializedSpinner.getSelectedItem().toString();
 
                     url = getUrl + "TYPE_NAME=" + type + "&&SPECIALIZED_NAME=" + specialized;
                     Intent intent1 = new Intent(PeopleFilter.this, MapsActivityFilter.class);
+                    intent1.putExtra("GET_URL", url);
                     startActivity(intent1);
                 }
             }
