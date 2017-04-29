@@ -2,6 +2,7 @@ package findhosp.com.publichealth.Map;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -68,17 +69,18 @@ public class MapsAnimalFilter extends FragmentActivity implements OnMapReadyCall
     LatLng latLng;
     Marker markerCurrent;
     Circle circle;
+    private String getUrl;
 
-
-    String getUrl="http://find-hosp.com/web_service/get_ahos.php?";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps_animal_filter);
 
-        /*Intent intent = getIntent();
-        getUrl = intent.getStringExtra("GET_URL");*/
+
+        Intent intent = getIntent();
+        getUrl = intent.getStringExtra("GET_URL");
+
         new MapsAnimalFilter.GetDataApi().execute();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
@@ -249,7 +251,10 @@ public class MapsAnimalFilter extends FragmentActivity implements OnMapReadyCall
                 Latitude = Double.parseDouble(location.get(i).get("LAT"));
                 Longitude = Double.parseDouble(location.get(i).get("LON"));
                 String name = location.get(i).get("AHOS_NAME");
-                MarkerOptions marker = new MarkerOptions().position(new LatLng(Latitude, Longitude)).title(name);
+                String addr = location.get(i).get("ADDR");
+                String url = location.get(i).get("URL");
+                String tel = location.get(i).get("TEL");
+                MarkerOptions marker = new MarkerOptions().position(new LatLng(Latitude, Longitude)).title(name).snippet(addr+"\n"+tel+"\n"+url);
 
                 /*
                 if(type.equals("human"){
@@ -263,6 +268,8 @@ public class MapsAnimalFilter extends FragmentActivity implements OnMapReadyCall
             }
 
         }
+
+
 
         private String readInputStreamToString(HttpURLConnection connection) {
             String result = null;
@@ -304,6 +311,9 @@ public class MapsAnimalFilter extends FragmentActivity implements OnMapReadyCall
 
                 map = new HashMap<>();
                 map.put("AHOS_NAME", c.getString("AHOS_NAME"));
+                map.put("ADDR", c.getString("ADDR"));
+                map.put("TEL", c.getString("TEL"));
+                map.put("URL", c.getString("URL"));
                 map.put("LAT", c.getString("LAT"));
                 map.put("LON", c.getString("LON"));
                 location.add(map);

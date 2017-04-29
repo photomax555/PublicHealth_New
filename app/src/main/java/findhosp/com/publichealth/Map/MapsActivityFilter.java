@@ -251,7 +251,10 @@ public class MapsActivityFilter extends FragmentActivity implements OnMapReadyCa
                 Latitude = Double.parseDouble(location.get(i).get("LAT"));
                 Longitude = Double.parseDouble(location.get(i).get("LON"));
                 String name = location.get(i).get("HHOS_NAME");
-                MarkerOptions marker = new MarkerOptions().position(new LatLng(Latitude, Longitude)).title(name);
+                String addr = location.get(i).get("ADDR");
+                String url = location.get(i).get("URL");
+                String tel = location.get(i).get("TEL");
+                MarkerOptions marker = new MarkerOptions().position(new LatLng(Latitude, Longitude)).title(name).snippet(addr+"\n"+tel+"\n"+url);
 
                 /*
                 if(type.equals("human"){
@@ -306,6 +309,9 @@ public class MapsActivityFilter extends FragmentActivity implements OnMapReadyCa
 
                 map = new HashMap<>();
                 map.put("HHOS_NAME", c.getString("HHOS_NAME"));
+                map.put("ADDR", c.getString("ADDR"));
+                map.put("TEL", c.getString("TEL"));
+                map.put("URL", c.getString("URL"));
                 map.put("LAT", c.getString("LAT"));
                 map.put("LON", c.getString("LON"));
                 location.add(map);

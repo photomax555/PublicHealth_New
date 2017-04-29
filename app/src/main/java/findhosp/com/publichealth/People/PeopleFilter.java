@@ -27,6 +27,7 @@ public class PeopleFilter extends AppCompatActivity {
     ArrayList<String> mSpecialized = new ArrayList<String>();
     String getUrl="http://find-hosp.com/web_service/get_hhos.php?";
     String url;
+    private RadioButton rd1, rd2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,9 @@ public class PeopleFilter extends AppCompatActivity {
         typeSpinner = (Spinner) findViewById(R.id.typeselect);
         specializedSpinner = (Spinner) findViewById(R.id.specializedselect);
 
+        rd1 = (RadioButton) findViewById(R.id.select_all);
+        rd2 = (RadioButton) findViewById(R.id.select_filter);
+
         /*final Intent intent = getIntent();
         final String getUrl = intent.getStringExtra("GET_URL");*/
 
@@ -47,10 +51,10 @@ public class PeopleFilter extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (checkedId == R.id.select_all) {
                     linearLayout.setVisibility(View.GONE);
-                    anInt = 0;
+                    rd1.setChecked(true);
                 } else if (checkedId == R.id.select_filter) {
                     linearLayout.setVisibility(View.VISIBLE);
-                    anInt = 1;
+                    rd2.setChecked(true);
                 }
             }
         });
@@ -75,11 +79,12 @@ public class PeopleFilter extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (anInt==0) {
+                if (rd1.isChecked()) {
                     Intent intent1 = new Intent(PeopleFilter.this, MapsActivityFilter.class);
                     intent1.putExtra("GET_URL", getUrl);
                     startActivity(intent1);
-                } else{
+                } else if (rd2.isChecked()){
+
                     String type = typeSpinner.getSelectedItem().toString();
                     String specialized = specializedSpinner.getSelectedItem().toString();
 
@@ -88,12 +93,12 @@ public class PeopleFilter extends AppCompatActivity {
                     intent1.putExtra("GET_URL", url);
                     startActivity(intent1);
                 }
+                TextView textView = (TextView) findViewById(R.id.t2);
+                textView.setText(url);
             }
 
-
-            ;
-
         });
+
     }
     private void createSpinnerData() {
         mType.add("รัฐบาล");
@@ -104,6 +109,6 @@ public class PeopleFilter extends AppCompatActivity {
         mSpecialized.add("ประสาท");
         mSpecialized.add("โรคติดต่อทางเพศสัมพันธ์");
         mSpecialized.add("หัวใจ");
-        mSpecialized.add("ตา หู คอ จมูก");
+        mSpecialized.add("ตาหูคอจมูก");
     }
 }
