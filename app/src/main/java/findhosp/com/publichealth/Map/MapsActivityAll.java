@@ -122,7 +122,9 @@ public class MapsActivityAll extends FragmentActivity implements OnMapReadyCallb
     public void onLocationChanged(Location loc) {
         currentLatitude = loc.getLatitude();
         currentLongitude = loc.getLongitude();
+        LatLng latLng = new LatLng(currentLatitude, currentLongitude);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLatitude, currentLongitude), 10));
+        markerCurrent = mMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.locathuman)).title("คุณอยู่ที่นี่").snippet("You are here"));
         circle = mMap.addCircle(new CircleOptions()
                 .center(new LatLng(currentLatitude, currentLongitude))
                 .radius(20000)

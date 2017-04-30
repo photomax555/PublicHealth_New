@@ -5,15 +5,29 @@
     android:gravity="center"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="findhosp.com.publichealth.Main.HelloPage">
+    tools:context="findhosp.com.publichealth.Main.HelloPage"
+    android:id="@+id/hi">
 
-    <Button
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-        android:id="@+id/btnHello"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button"
+        <ImageView
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/hihihi"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:background="@drawable/bghospital"/>
 
+        <TextView
+            android:layout_marginTop="50dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="แตะหน้าจอเพื่อดำเนินการต่อ"
+            android:textSize="20sp"/>
 
-         />
+</LinearLayout>
+
 </RelativeLayout>

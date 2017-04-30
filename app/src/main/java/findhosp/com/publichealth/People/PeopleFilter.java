@@ -6,11 +6,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -18,14 +21,14 @@ import findhosp.com.publichealth.Map.MapsActivityFilter;
 import findhosp.com.publichealth.R;
 
 public class PeopleFilter extends AppCompatActivity {
-    int anInt=0;
+    int anInt = 0;
     RadioGroup radioGroup;
     LinearLayout linearLayout;
     Spinner typeSpinner;
     Spinner specializedSpinner;
     ArrayList<String> mType = new ArrayList<String>();
     ArrayList<String> mSpecialized = new ArrayList<String>();
-    String getUrl="http://find-hosp.com/web_service/get_hhos.php?";
+    String getUrl = "http://find-hosp.com/web_service/get_hhos.php?";
     String url;
     private RadioButton rd1, rd2;
 
@@ -83,23 +86,63 @@ public class PeopleFilter extends AppCompatActivity {
                     Intent intent1 = new Intent(PeopleFilter.this, MapsActivityFilter.class);
                     intent1.putExtra("GET_URL", getUrl);
                     startActivity(intent1);
-                } else if (rd2.isChecked()){
+                } else if (rd2.isChecked()) {
+
+                    CheckBox cbPs = (CheckBox) findViewById(R.id.privilege1);
+                    CheckBox cbPc = (CheckBox) findViewById(R.id.privilege2);
+                    CheckBox cbM = (CheckBox) findViewById(R.id.privilege3);
+
+                    /*cbPs.setChecked(false);
+                    cbPc.setChecked(false);
+                    cbM.setChecked(false);*/
+
+                    Boolean aBoolean = cbPs.isChecked();
+                    Boolean bBoolean = cbPc.isChecked();
+                    Boolean cBoolean = cbM.isChecked();
+
 
                     String type = typeSpinner.getSelectedItem().toString();
                     String specialized = specializedSpinner.getSelectedItem().toString();
+                    String priSang = "Y";
+                    String priChee = "Y";
+                    String priMuang = "Y";
 
-                    url = getUrl + "TYPE_NAME=" + type + "&&SPECIALIZED_NAME=" + specialized;
+                    if (aBoolean) {
+                        if (bBoolean) {
+                            if (cBoolean) {
+                                url = getUrl + "TYPE_NAME=" + type + "&&SPECIALIZED_NAME=" + specialized + "&&PRA_SANG=" + priSang + "&&PRA_CHEE=" + priChee + "&&MUANG=" + priMuang;
+                            } else {
+                                url = getUrl + "TYPE_NAME=" + type + "&&SPECIALIZED_NAME=" + specialized + "&&PRA_SANG=" + priSang + "&&PRA_CHEE=" + priChee;
+                            }
+                        } else if (cBoolean) {
+                            url = getUrl + "TYPE_NAME=" + type + "&&SPECIALIZED_NAME=" + specialized + "&&PRA_SANG=" + priSang + "&&MUANG=" + priMuang;
+                        } else {
+                            url = getUrl + "TYPE_NAME=" + type + "&&SPECIALIZED_NAME=" + specialized + "&&PRA_SANG=" + priSang;
+                        }
+                    } else if (bBoolean) {
+                        if (cBoolean) {
+                            url = getUrl + "TYPE_NAME=" + type + "&&SPECIALIZED_NAME=" + specialized + "&&PRA_CHEE=" + priChee + "&&MUANG=" + priMuang;
+                        } else {
+                            url = getUrl + "TYPE_NAME=" + type + "&&SPECIALIZED_NAME=" + specialized + "&&PRA_CHEE=" + priChee;
+                        }
+
+                    } else {
+                        url = getUrl + "TYPE_NAME=" + type + "&&SPECIALIZED_NAME=" + specialized + "&&MUANG=" + priMuang;
+                    }
                     Intent intent1 = new Intent(PeopleFilter.this, MapsActivityFilter.class);
                     intent1.putExtra("GET_URL", url);
                     startActivity(intent1);
                 }
-                TextView textView = (TextView) findViewById(R.id.t2);
-                textView.setText(url);
+
+                //TextView textView = (TextView) findViewById(R.id.t2);
+                //textView.setText(url);
             }
 
         });
 
     }
+
+
     private void createSpinnerData() {
         mType.add("รัฐบาล");
         mType.add("เอกชน");

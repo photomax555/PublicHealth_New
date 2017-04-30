@@ -83,8 +83,8 @@ public class AnimalFilter extends AppCompatActivity {
                     intent1.putExtra("GET_URL", url);
                     startActivity(intent1);
                 }
-                TextView textView = (TextView) findViewById(R.id.t1);
-                textView.setText(url);
+                //TextView textView = (TextView) findViewById(R.id.t1);
+                //textView.setText(url);
             }
 
 

@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -13,9 +15,13 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
@@ -25,6 +31,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -44,6 +51,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 import findhosp.com.publichealth.R;
 
@@ -116,7 +125,11 @@ public class MapsActivityFilter extends FragmentActivity implements OnMapReadyCa
     public void onLocationChanged(Location loc) {
         currentLatitude = loc.getLatitude();
         currentLongitude = loc.getLongitude();
+        LatLng latLng = new LatLng(currentLatitude, currentLongitude);
+        markerCurrent = mMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.locathuman)).title("คุณอยู่ที่นี่").snippet("You are here"));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLatitude, currentLongitude), 10));
+
+        stopLocationUpdate();
         /*circle = mMap.addCircle(new CircleOptions()
                 .center(new LatLng(currentLatitude, currentLongitude))
                 .radius(20000)
@@ -164,6 +177,16 @@ public class MapsActivityFilter extends FragmentActivity implements OnMapReadyCa
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
+
+    private void stopLocationUpdate() {
+        if (mGoogleApiClient!=null) {
+            if (mRequestingLocationUpdates) {
+                LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+                mRequestingLocationUpdates = false;
+            }
+        }
+    }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -223,6 +246,7 @@ public class MapsActivityFilter extends FragmentActivity implements OnMapReadyCa
             progressDialog.show();
         }
 
+
         @Override
         protected Void doInBackground(Void... voids) {
             try {
@@ -252,9 +276,11 @@ public class MapsActivityFilter extends FragmentActivity implements OnMapReadyCa
                 Longitude = Double.parseDouble(location.get(i).get("LON"));
                 String name = location.get(i).get("HHOS_NAME");
                 String addr = location.get(i).get("ADDR");
-                String url = location.get(i).get("URL");
                 String tel = location.get(i).get("TEL");
-                MarkerOptions marker = new MarkerOptions().position(new LatLng(Latitude, Longitude)).title(name).snippet(addr+"\n"+tel+"\n"+url);
+                String url = location.get(i).get("URL");
+
+
+                MarkerOptions marker = new MarkerOptions().position(new LatLng(Latitude, Longitude)).title(name).snippet(addr+"\b\b"+tel+"\b\b"+url);
 
                 /*
                 if(type.equals("human"){
@@ -265,6 +291,130 @@ public class MapsActivityFilter extends FragmentActivity implements OnMapReadyCa
                  */
                 marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.hospital));
                 mMap.addMarker(marker);
+
+                GoogleApiAvailability gAPI = GoogleApiAvailability.getInstance();
+                int status = gAPI.isGooglePlayServicesAvailable(MapsActivityFilter.this);
+
+                if (status == ConnectionResult.SUCCESS) {
+                    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+                }
+
+                Button cmdClear = (Button) findViewById(R.id.cmdClear);
+                cmdClear.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mMap.clear();
+                        EditText edtSearch = (EditText) findViewById(R.id.edtSearch);
+                        edtSearch.setText("");
+
+                        LatLng latLng = new LatLng(currentLatitude, currentLongitude);
+                        markerCurrent = mMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.locathuman)).title("คุณอยู่ที่นี่").snippet("You are here"));
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLatitude, currentLongitude), 10));
+                        stopLocationUpdate();
+
+
+                        progressDialog.dismiss();
+                        //Display Google Map
+                        jsonParse();
+
+
+                        latLng = new LatLng(currentLatitude, currentLongitude);
+                        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+
+
+                        //***Marker(Loop)
+                        for (int i = 0; i < location.size(); i++) {
+                            Latitude = Double.parseDouble(location.get(i).get("LAT"));
+                            Longitude = Double.parseDouble(location.get(i).get("LON"));
+                            String name = location.get(i).get("HHOS_NAME");
+                            String addr = location.get(i).get("ADDR");
+                            String tel = location.get(i).get("TEL");
+                            String url = location.get(i).get("URL");
+
+
+                            MarkerOptions marker = new MarkerOptions().position(new LatLng(Latitude, Longitude)).title(name).snippet(addr+"\b\b"+tel+"\b\b"+url);
+                            marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.hospital));
+                            mMap.addMarker(marker);}
+                    }
+                });
+
+                Button cmdSearch = (Button) findViewById(R.id.cmdSearch);
+                cmdSearch.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        EditText edtSearch = (EditText) findViewById(R.id.edtSearch);
+                        String q = edtSearch.getText().toString().trim();
+
+                        LatLng latLng = new LatLng(currentLatitude, currentLongitude);
+                        markerCurrent = mMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.locathuman)).title("คุณอยู่ที่นี่").snippet("You are here"));
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLatitude, currentLongitude), 10));
+                        stopLocationUpdate();
+
+                        progressDialog.dismiss();
+                        //Display Google Map
+                        jsonParse();
+
+
+                        latLng = new LatLng(currentLatitude, currentLongitude);
+                        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+
+
+
+                        if (q != null && !q.equals("")) {
+                            Geocoder geo = new Geocoder(MapsActivityFilter.this, Locale.getDefault());
+                            try {
+                                List<Address> addLists = geo.getFromLocationName(q, 7);
+                                if (addLists.size() > 0) {
+                                    mMap.clear();
+
+                                    Address add = null;
+                                    LatLng CurrentAddress = null;
+                                    for (int i = 0; i < addLists.size(); i++) {
+                                        add = (Address) addLists.get(i);
+                                        CurrentAddress = new LatLng(add.getLatitude(), add.getLongitude());
+
+                                        String str = "";
+                                        for (int j = 0; j < add.getMaxAddressLineIndex(); j++){
+                                            str = str + add.getAddressLine(j) + "\n";
+                                        }
+
+                                        Marker m = mMap.addMarker(new MarkerOptions()
+                                                .position(CurrentAddress)
+                                                .title(add.getAddressLine(0) + " (Lat : " + add.getLatitude() + ") (Lng : " + add.getLongitude() + ")")
+                                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                                                .snippet(str));
+                                    }
+
+                                    CameraPosition cam = new CameraPosition.Builder()
+                                            .target(CurrentAddress)
+                                            .zoom(5)
+                                            .build();
+                                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cam));
+                                } else {
+                                    Toast.makeText(getBaseContext(), "ไม่พบที่อยู่ตามที่คุณระบุ!!!", Toast.LENGTH_LONG).show();
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        for (int i = 0; i < location.size(); i++) {
+                            Latitude = Double.parseDouble(location.get(i).get("LAT"));
+                            Longitude = Double.parseDouble(location.get(i).get("LON"));
+                            String name = location.get(i).get("HHOS_NAME");
+                            String addr = location.get(i).get("ADDR");
+                            String tel = location.get(i).get("TEL");
+                            String url = location.get(i).get("URL");
+
+
+                            MarkerOptions marker = new MarkerOptions().position(new LatLng(Latitude, Longitude)).title(name).snippet(addr+"\b\b"+tel+"\b\b"+url);
+
+                            marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.hospital));
+
+                            mMap.addMarker(marker);}
+                    }
+                });
             }
 
         }
