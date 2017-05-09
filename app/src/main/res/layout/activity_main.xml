@@ -18,13 +18,15 @@
             android:id="@+id/button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="สถานพยาบาลคน" />
+            android:text="สถานพยาบาลคน"
+            android:textSize="15sp"/>
 
         <Button
             android:layout_marginTop="30dp"
             android:id="@+id/button2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="สถานพยาบาลสัตว์" />
+            android:text="สถานพยาบาลสัตว์"
+            android:textSize="15sp"/>
     </LinearLayout>
 </RelativeLayout>

@@ -260,7 +260,11 @@ public class MapsAnimalAll extends FragmentActivity implements OnMapReadyCallbac
                 Longitude = Double.parseDouble(location.get(i).get("LON"));
                 String name = location.get(i).get("AHOS_NAME");
                 String addr = location.get(i).get("ADDR");
-                MarkerOptions marker = new MarkerOptions().position(new LatLng(Latitude, Longitude)).title(name);
+                String tel = location.get(i).get("TEL");
+                String url = location.get(i).get("URL");
+
+
+                MarkerOptions marker = new MarkerOptions().position(new LatLng(Latitude, Longitude)).title(name).snippet(addr+"\b\b"+tel+"\b\b"+url);
 
                 marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.animalhos));
 
@@ -313,6 +317,9 @@ public class MapsAnimalAll extends FragmentActivity implements OnMapReadyCallbac
 
                 map = new HashMap<>();
                 map.put("AHOS_NAME", c.getString("AHOS_NAME"));
+                map.put("ADDR", c.getString("ADDR"));
+                map.put("TEL", c.getString("TEL"));
+                map.put("URL", c.getString("URL"));
                 map.put("LAT", c.getString("LAT"));
                 map.put("LON", c.getString("LON"));
                 location.add(map);

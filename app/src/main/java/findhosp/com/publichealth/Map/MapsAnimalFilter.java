@@ -273,7 +273,7 @@ public class MapsAnimalFilter extends FragmentActivity implements OnMapReadyCall
             for (int i = 0; i < location.size(); i++) {
                 Latitude = Double.parseDouble(location.get(i).get("LAT"));
                 Longitude = Double.parseDouble(location.get(i).get("LON"));
-                String name = location.get(i).get("HHOS_NAME");
+                String name = location.get(i).get("AHOS_NAME");
                 String addr = location.get(i).get("ADDR");
                 String tel = location.get(i).get("TEL");
                 String url = location.get(i).get("URL");
@@ -326,7 +326,7 @@ public class MapsAnimalFilter extends FragmentActivity implements OnMapReadyCall
                         for (int i = 0; i < location.size(); i++) {
                             Latitude = Double.parseDouble(location.get(i).get("LAT"));
                             Longitude = Double.parseDouble(location.get(i).get("LON"));
-                            String name = location.get(i).get("HHOS_NAME");
+                            String name = location.get(i).get("AHOS_NAME");
                             String addr = location.get(i).get("ADDR");
                             String tel = location.get(i).get("TEL");
                             String url = location.get(i).get("URL");
@@ -382,13 +382,13 @@ public class MapsAnimalFilter extends FragmentActivity implements OnMapReadyCall
                                         Marker m = mMap.addMarker(new MarkerOptions()
                                                 .position(CurrentAddress)
                                                 .title(add.getAddressLine(0) + " (Lat : " + add.getLatitude() + ") (Lng : " + add.getLongitude() + ")")
-                                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.heremarker))
                                                 .snippet(str));
                                     }
 
                                     CameraPosition cam = new CameraPosition.Builder()
                                             .target(CurrentAddress)
-                                            .zoom(5)
+                                            .zoom(10)
                                             .build();
                                     mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cam));
                                 } else {
@@ -401,7 +401,7 @@ public class MapsAnimalFilter extends FragmentActivity implements OnMapReadyCall
                         for (int i = 0; i < location.size(); i++) {
                             Latitude = Double.parseDouble(location.get(i).get("LAT"));
                             Longitude = Double.parseDouble(location.get(i).get("LON"));
-                            String name = location.get(i).get("HHOS_NAME");
+                            String name = location.get(i).get("AHOS_NAME");
                             String addr = location.get(i).get("ADDR");
                             String tel = location.get(i).get("TEL");
                             String url = location.get(i).get("URL");

@@ -18,14 +18,16 @@
             android:id="@+id/button3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="สถานพยาบาลใกล้เคียง" />
+            android:text="สถานพยาบาลใกล้เคียง"
+            android:textSize="15sp"/>
 
         <Button
             android:layout_marginTop="30dp"
             android:id="@+id/button4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="สถานพยาบาลทั้งหมด" />
+            android:text="สถานพยาบาลทั้งหมด"
+            android:textSize="15sp"/>
     </LinearLayout>
 
 </RelativeLayout>

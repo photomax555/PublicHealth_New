@@ -308,7 +308,7 @@ public class MapsActivityFilter extends FragmentActivity implements OnMapReadyCa
                         edtSearch.setText("");
 
                         LatLng latLng = new LatLng(currentLatitude, currentLongitude);
-                        markerCurrent = mMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.locathuman)).title("คุณอยู่ที่นี่").snippet("You are here"));
+                        markerCurrent = mMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.locatehuman)).title("คุณอยู่ที่นี่").snippet("You are here"));
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLatitude, currentLongitude), 10));
                         stopLocationUpdate();
 
@@ -383,13 +383,13 @@ public class MapsActivityFilter extends FragmentActivity implements OnMapReadyCa
                                         Marker m = mMap.addMarker(new MarkerOptions()
                                                 .position(CurrentAddress)
                                                 .title(add.getAddressLine(0) + " (Lat : " + add.getLatitude() + ") (Lng : " + add.getLongitude() + ")")
-                                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.heremarker))
                                                 .snippet(str));
                                     }
 
                                     CameraPosition cam = new CameraPosition.Builder()
                                             .target(CurrentAddress)
-                                            .zoom(5)
+                                            .zoom(10)
                                             .build();
                                     mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cam));
                                 } else {
